@@ -128,10 +128,10 @@ public class DocusignComponent {
         }
     }
 
-    /*@PostConstruct
+    @PostConstruct
     public void init() throws IOException, ApiException {
         accountIdFromCall = doAuth();
-    }*/
+    }
 
     /**
      * This method creates the envelop from the disclosure package received from the event handler plugin and sends it to docusign.
@@ -140,7 +140,7 @@ public class DocusignComponent {
      * @return
      * @throws ApiException
      */
-    public EnvelopeDefinition createEmbeddedEnvelop(List<Map<String, String>> base64Data, Loan loan) throws ApiException {
+    public String createEmbeddedEnvelop(List<Map<String, String>> base64Data, Loan loan) throws ApiException {
         long start = System.currentTimeMillis();
 
         EnvelopeDefinition envDef = new EnvelopeDefinition();
@@ -174,7 +174,7 @@ public class DocusignComponent {
         });
         envDef.setCustomFields(fields);
         envDef.setStatus("sent");
-        return envDef;
+        return sendEnvelop(envDef);
         //retry sending the envelop in case of any exception
     }
 
@@ -185,7 +185,7 @@ public class DocusignComponent {
      * @throws ClientHandlerException
      * @throws ApiException
      */
-    public String sendEnvelop(EnvelopeDefinition envDef) throws ClientHandlerException, ApiException {
+    private String sendEnvelop(EnvelopeDefinition envDef) throws ClientHandlerException, ApiException {
         String envelopId = null;
         LOG.debug("trying to send the envelop to docusign");
         EnvelopesApi envelopesApi = new EnvelopesApi(apiClient);

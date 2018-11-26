@@ -46,7 +46,7 @@ public class BPMAppConfig {
         config.setTransactionManager(transactionManager());
 
         config.setDatabaseSchemaUpdate("true");
-        config.setHistory("audit");
+        config.setHistory("full");
         config.setJobExecutorActivate(true);
 
         return config;

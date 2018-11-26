@@ -12,7 +12,10 @@ import com.docusign.esign.model.EnvelopeDefinition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.variable.Variables;
+import org.camunda.bpm.engine.variable.value.ObjectValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +69,7 @@ public class DocusignUploadComponent {
      * @throws ClassNotFoundException
      * @throws ApiException
      */
-    public void createEnvelop(String message, DelegateExecution execution) throws IOException, ClassNotFoundException, ApiException {
+    public String createAndSendEnvelop(String message, DelegateExecution execution) throws IOException, ClassNotFoundException, ApiException {
         DocumentContext context = JsonPath.parse(message);
         String loanId = context.read("$.loanId", String.class);
         if (loanId == null || loanId.isEmpty()) throw new RuntimeException("Loan Id missing in the incoming request");
@@ -78,14 +81,12 @@ public class DocusignUploadComponent {
         loan.setDisclosureType(DisclosureUtil.getDisclosureForBSS(disclosureType));
         updateSigners(loan, context);
         //TODO: revist the following statement
-        EnvelopeDefinition envelopeDefinition = eSignComponent.createEmbeddedEnvelop(context.read("$.documents[?(@.signatureType == 'eSignable')]", List.class), loan);
-        execution.setVariable("envelopDefinition", envelopeDefinition);
-        execution.setVariable("loanData", loan);
+        String envelopeId = eSignComponent.createEmbeddedEnvelop(context.read("$.documents", List.class), loan);
+        ObjectMapper mapper = new ObjectMapper();
+        execution.setVariable("loanData", mapper.writeValueAsString(loan));
+        return envelopeId;
     }
 
-    public String sendEnvelop(EnvelopeDefinition envelopeDefinition) throws ApiException {
-        return eSignComponent.sendEnvelop(envelopeDefinition);
-    }
 
     /**
      * send the disclosure data and esign handle through BSS API
@@ -158,5 +159,11 @@ public class DocusignUploadComponent {
             signers.add(coBorrower);
         }
         loan.setSigners(signers);
+    }
+
+    public boolean validate(String eventMsg) {
+        DocumentContext context = JsonPath.parse(eventMsg);
+        String loanId = context.read("$.loanId", String.class);
+        return  (loanId != null && !loanId.isEmpty());
     }
 }
