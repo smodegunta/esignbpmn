@@ -5,6 +5,7 @@ public enum SinerEvent {
     EsignConsent,
     EsignAuthentication,
     EsignReview,
+    EsignDenyConsent,
     EsignSignAndSubmit,
     EsignPackageDownload,
     EsignSignAndSubmitAllComplete,

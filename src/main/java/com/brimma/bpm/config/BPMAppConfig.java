@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.spring.ProcessEngineFactoryBean;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
+import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -44,7 +45,7 @@ public class BPMAppConfig {
 
         config.setDataSource(dataSource());
         config.setTransactionManager(transactionManager());
-
+        config.setDefaultSerializationFormat(Variables.SerializationDataFormats.JSON.getName());
         config.setDatabaseSchemaUpdate("true");
         config.setHistory("full");
         config.setJobExecutorActivate(true);

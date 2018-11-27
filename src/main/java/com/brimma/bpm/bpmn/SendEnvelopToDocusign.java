@@ -44,7 +44,7 @@ public class SendEnvelopToDocusign implements JavaDelegate {
     }
 
     private void addDocs(File file, DocumentContext context) {
-        List<Map<String, Object>> docs = (List<Map<String, Object>>) context.read("$.documents", List.class).stream().map(doc -> {
+        context.read("$.documents", List.class).forEach(doc -> {
             Map<String, Object> document = (Map<String, Object>) doc;
             String base64file = null;
             try {
@@ -52,12 +52,7 @@ public class SendEnvelopToDocusign implements JavaDelegate {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Map<String, Object> res = new HashMap<>();
-            res.put("title", document.get("title"));
-            res.put("base64String", base64file);
-            res.put("fileExtension", "pdf");
-            return res;
-        }).collect(Collectors.toList());
-        context.put("$", "documents", docs);
+            document.put("base64String", base64file);
+        });
     }
 }

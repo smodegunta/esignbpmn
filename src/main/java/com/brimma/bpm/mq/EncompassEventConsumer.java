@@ -3,6 +3,7 @@ package com.brimma.bpm.mq;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.variable.Variables;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Base64;
 import java.util.HashMap;
@@ -57,7 +59,9 @@ public class EncompassEventConsumer {
         context.delete("$.documents[?(@.signatureType != 'eSignable')]");
         files.forEach(file -> {
             try {
-                Files.write(new File(docLocation, ((String) file.get("title")).replaceAll("\\/", "")).toPath(), Base64.getDecoder().decode(((String) file.get("base64String")).getBytes()), StandardOpenOption.WRITE);
+                File doc = new File(docLocation, ((String) file.get("title")).replaceAll("\\/", ""));
+                if(doc.exists()) FileUtils.forceDelete(doc);
+                Files.write(doc.toPath(), Base64.getDecoder().decode(((String) file.get("base64String")).getBytes()), StandardOpenOption.CREATE_NEW);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

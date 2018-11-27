@@ -17,6 +17,15 @@ public class Borrower {
     private String status;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String email;
+    private String declineReason;
+
+    public String getDeclineReason() {
+        return declineReason;
+    }
+
+    public void setDeclineReason(String declineReason) {
+        this.declineReason = declineReason;
+    }
 
     public int getBssId() {
         return bssId;

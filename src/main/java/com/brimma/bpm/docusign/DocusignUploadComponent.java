@@ -81,7 +81,7 @@ public class DocusignUploadComponent {
         loan.setDisclosureType(DisclosureUtil.getDisclosureForBSS(disclosureType));
         updateSigners(loan, context);
         //TODO: revist the following statement
-        String envelopeId = eSignComponent.createEmbeddedEnvelop(context.read("$.documents", List.class), loan);
+        String envelopeId = eSignComponent.createEmbeddedEnvelop(context.read("$.documents[?(@.signatureType == 'eSignable')]", List.class), loan);
         ObjectMapper mapper = new ObjectMapper();
         execution.setVariable("loanData", mapper.writeValueAsString(loan));
         return envelopeId;
