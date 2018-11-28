@@ -25,9 +25,6 @@ public class NotifySignerDataToBss implements JavaDelegate {
     private static final Logger LOG = LoggerFactory.getLogger(NotifySignerDataToBss.class);
 
     @Autowired
-    private ObjectMapper mapper;
-
-    @Autowired
     @Qualifier("bssAuthClientManager")
     private AuthClientManager manager;
 
