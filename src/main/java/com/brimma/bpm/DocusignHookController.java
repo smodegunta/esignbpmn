@@ -24,7 +24,9 @@ public class DocusignHookController {
     @PostMapping(value = "esign/status", consumes = MediaType.TEXT_XML)
     public String updateDocusignInterimStatus(@RequestBody String body) throws Exception {
         Map<String, Object> vars = new HashMap<>();
-        String result = transformer.transform(body, loan -> vars.put("loanData", Variables.objectValue(loan).serializationDataFormat(Variables.SerializationDataFormats.JSON).create()));
+        String result = transformer.transform(body, loan -> {
+            vars.put("loanData", Variables.objectValue(loan).serializationDataFormat(Variables.SerializationDataFormats.JAVA).create());
+        });
         vars.put("updateMessage", result.getBytes());
         ProcessInstance instance = runtimeService.startProcessInstanceByMessage("borrowersSigned", "borrowersSigned", vars);
         return instance.getProcessInstanceId();

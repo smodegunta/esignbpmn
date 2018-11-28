@@ -1,5 +1,7 @@
 package com.brimma.bpm.config;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
@@ -7,6 +9,7 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.spring.ProcessEngineFactoryBean;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
 import org.camunda.bpm.engine.variable.Variables;
+import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +18,7 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 
 @Configuration
 @ComponentScan("com.brimma.bpm")
@@ -45,7 +49,7 @@ public class BPMAppConfig {
 
         config.setDataSource(dataSource());
         config.setTransactionManager(transactionManager());
-        config.setDefaultSerializationFormat(Variables.SerializationDataFormats.JSON.getName());
+        config.setDefaultSerializationFormat(Variables.SerializationDataFormats.JAVA.getName());
         config.setDatabaseSchemaUpdate("true");
         config.setHistory("full");
         config.setJobExecutorActivate(true);

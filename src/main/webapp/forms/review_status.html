@@ -1,0 +1,74 @@
+<form name="loanSignerForm" role="form">
+
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js" type="text/javascript"></script>
+    <script src="camunda-bpm-sdk-angular.js" type="text/javascript"></script>-->
+
+    <!--<script cam-script type="text/form-script">
+
+	camForm.on('form-loaded', function() {
+	  // fetch the variable named 'loanData'
+	  camForm.variableManager.fetchVariable('loanData');
+	  camForm.variableManager.createVariable({
+            name: 'reviewed',
+            type: 'boolean',
+            value: false,
+            isDirty: true
+        });
+	});
+
+	camForm.on('variables-fetched', function() {
+	  // after the variables are fetched, bind the value of loanData to a angular
+	  // scope value such that the form can work on it
+	  $scope.loanData = camForm.variableManager.variable('loanData.loan').value;
+	  $scope.reviewed = camForm.variableManager.variable('reviewed').value;
+
+	});
+
+
+    </script>-->
+<!--
+    <h3>Customer Data</h3>
+
+    <div class="control-group" ng-for="borrower in loanData.borowers">
+        <label class="control-label" for="status">Signed Status </label>
+        <div class="controls">
+            <input id="status"
+                   class="form-control"
+                   type="text"
+                   disabled
+                   [(ngModel)]="borrower.status">
+        </div>
+        <label class="control-label" for="reason">Rejected Reason </label>
+        <div class="controls">
+            <input id="reason"
+                   class="form-control"
+                   type="text"
+                   readonly="true"
+                   [(ngModel)]="borrower.declineReason">
+        </div>
+        <div>
+
+            <label class="control-label" for="reviewed">Reviewed </label>
+            <div class="controls">
+                <input id="reviewed"
+                       class="form-control"
+                       type="checkbox"
+                       readonly="true"
+                       [(ngModel)]="reviewed">
+            </div>
+
+        </div>
+    </div>-->
+    <label for="customerId">Customer Id:</label>
+
+    <input type="text" id="customerId"
+           cam-variable-name="loanData.borrowers[0].status"
+           cam-variable-type="String">
+
+    <label for="customerRevenue">Customer Revenue:</label>
+
+    <input type="checkbox" id="customerRevenue"
+           cam-variable-name="loanData.borrowers[0].declineReason"
+           cam-variable-type="Boolean">
+
+</form>

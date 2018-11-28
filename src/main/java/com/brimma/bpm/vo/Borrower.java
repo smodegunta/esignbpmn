@@ -3,7 +3,9 @@ package com.brimma.bpm.vo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Borrower {
+import java.io.Serializable;
+
+public class Borrower implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("bssBorrowerId")
     private int bssId;

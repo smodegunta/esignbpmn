@@ -36,7 +36,7 @@ public class NotifySignerDataToBss implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        Loan loan = execution.getVariableTyped("LoanData");
+        Loan loan = (Loan) execution.getVariableTyped("loanData").getValue();
         BSSAddDocPackageReq docPackageReq = new BSSAddDocPackageReq();
         docPackageReq.setLoanId(loan.getLoanNumber());
         Optional<Borrower> borrowerOptional = loan.getBorrowers().stream().filter(signer -> "Completed".equals(signer.getStatus()) || "Declined".equals(signer.getStatus())).findFirst();

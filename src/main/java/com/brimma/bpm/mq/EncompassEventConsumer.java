@@ -3,10 +3,7 @@ package com.brimma.bpm.mq;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.activemq.command.ActiveMQTextMessage;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.variable.Variables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.jms.Message;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Base64;
 import java.util.HashMap;
@@ -60,7 +55,7 @@ public class EncompassEventConsumer {
         files.forEach(file -> {
             try {
                 File doc = new File(docLocation, ((String) file.get("title")).replaceAll("\\/", ""));
-                if(doc.exists()) FileUtils.forceDelete(doc);
+                if(doc.exists()) Files.delete(doc.toPath());
                 Files.write(doc.toPath(), Base64.getDecoder().decode(((String) file.get("base64String")).getBytes()), StandardOpenOption.CREATE_NEW);
             } catch (IOException e) {
                 throw new RuntimeException(e);

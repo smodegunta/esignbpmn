@@ -54,13 +54,7 @@
       <bpmn:outgoing>SequenceFlow_0agby79</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_1fai8ys</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Task_1k33o5a" name="Review the Rejected Reason">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="name" label="Borrower Name" type="string" defaultValue="${loan.jsonPath(&#34;$.borrowers[(@status == &#39;Declined&#39;)].name&#34;)}" />
-          <camunda:formField id="declinedReason" label="Declined Reason" type="string" defaultValue="${loan.jsonPath(&#34;$.borrowers[(@status == &#39;Declined&#39;)].declineReason&#34;)}" />
-        </camunda:formData>
-      </bpmn:extensionElements>
+    <bpmn:userTask id="Task_1k33o5a" name="Review the Rejected Reason" camunda:formKey="embedded:app:forms/review_status.html" camunda:assignee="sa">
       <bpmn:incoming>SequenceFlow_1fai8ys</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_14x9zuk</bpmn:outgoing>
     </bpmn:userTask>
@@ -95,9 +89,11 @@
     <bpmn:sequenceFlow id="SequenceFlow_1s416j6" sourceRef="ServiceTask_1w35ij1" targetRef="ExclusiveGateway_0mjkm1u" />
     <bpmn:sequenceFlow id="SequenceFlow_018v8i3" sourceRef="StartEvent_1l5j3m2" targetRef="ExclusiveGateway_15he3h6" />
     <bpmn:sequenceFlow id="SequenceFlow_0agby79" name="signed" sourceRef="ExclusiveGateway_15he3h6" targetRef="Task_0ch9yev">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${loanData.borrowerStatus == "Completed"}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${loanData.getBorrowers().get(0).getStatus() == "Completed"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_1fai8ys" name="rejected" sourceRef="ExclusiveGateway_15he3h6" targetRef="Task_1k33o5a" />
+    <bpmn:sequenceFlow id="SequenceFlow_1fai8ys" name="rejected" sourceRef="ExclusiveGateway_15he3h6" targetRef="Task_1k33o5a">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${loanData.getBorrowers().get(0).getStatus() != "Completed"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_14x9zuk" sourceRef="Task_1k33o5a" targetRef="Task_0ch9yev" />
     <bpmn:sequenceFlow id="SequenceFlow_12f0fxv" sourceRef="Task_0ch9yev" targetRef="Task_1sn1326" />
     <bpmn:sequenceFlow id="SequenceFlow_12d5beh" sourceRef="Task_1sn1326" targetRef="EndEvent_1dadhfp" />

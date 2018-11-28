@@ -106,8 +106,6 @@ public class UpdateSignStatusTransformer {
                 loan.setBorrowers(Arrays.asList(borrower));
                 loanConsumer.accept(loan);
             }
-
-
             //TODO :: rejected case needs to be added
         }
         return context;
