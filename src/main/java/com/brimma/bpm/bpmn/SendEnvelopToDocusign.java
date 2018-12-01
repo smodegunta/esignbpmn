@@ -13,7 +13,9 @@ import org.camunda.bpm.engine.variable.value.ObjectValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +34,12 @@ public class SendEnvelopToDocusign implements JavaDelegate {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${esign-handler-endpoint}")
+    private String esignInitiateDisclosureEndpoint;
+
     @Value("${CONFIG}")
     private String tmpDir;
 
@@ -40,7 +48,11 @@ public class SendEnvelopToDocusign implements JavaDelegate {
         byte[] envelopDefinition = (byte[]) execution.getVariable("message");
         DocumentContext context = JsonPath.parse(new String(envelopDefinition));
         addDocs(new File(tmpDir, context.read("$.loanId")), context );
-        execution.setVariable("envelopId", uploadComponent.createAndSendEnvelop(context.jsonString(), execution));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<String>(context.jsonString(), headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(esignInitiateDisclosureEndpoint, HttpMethod.POST, entity, String.class);
+        execution.setVariable("envelopSent", responseEntity.getStatusCodeValue());
     }
 
     private void addDocs(File file, DocumentContext context) {
