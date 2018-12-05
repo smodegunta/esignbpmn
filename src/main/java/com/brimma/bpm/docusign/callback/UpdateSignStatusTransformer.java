@@ -97,7 +97,7 @@ public class UpdateSignStatusTransformer {
             if (borrowerStatus.equals("Completed") || borrowerStatus.equals("Declined")) {
                 Loan loan = new Loan();
                 loan.setId(loanId);
-                loan.setLoanNumber(Integer.parseInt(bssLoanId));
+//                loan.setLoanNumber(Integer.parseInt(bssLoanId));
                 loan.setDisclosureType(disclosureType);
                 Borrower borrower = new Borrower();
                 borrower.setBssId(Integer.parseInt(borrowerId));
